@@ -10,7 +10,7 @@ import org.apfloat.Apfloat;
 public class EulerCalculator {
     private static int precision;
     private static int numberOfThreads;
-    private static String outputFileName = "result.txt";
+    private static String filename = "result.txt";
     private static boolean quietState = false;
 
     public static void main(String[] args) {
@@ -26,16 +26,13 @@ public class EulerCalculator {
 
             BigInteger terms = BigInteger.valueOf(precision).divide(
                     BigInteger.valueOf(numberOfThreads));
-
             while (terms.compareTo(BigInteger.valueOf(100)) >= 0) {
                 terms = terms.divide(BigInteger.TEN);
             }
 
-            System.out.println("Terms: " + terms);
-
             BigInteger currentTerm = BigInteger.ZERO;
-
             Apfloat eulerNumber = new Apfloat(0, precision);
+            System.out.println("Workload: " + terms);
 
             while (true) {
 
@@ -65,9 +62,7 @@ public class EulerCalculator {
             }
 
             writeToFile(eulerNumber.toString());
-
             long endTime = Calendar.getInstance().getTimeInMillis();
-
             System.out.printf("Execution time: %d ms.\n", endTime - startTime);
 
         } else {
@@ -76,6 +71,12 @@ public class EulerCalculator {
 
     }
 
+    /**
+     * Parse command line args.
+     *
+     * @param args args which are passed from the command line
+     * @throws Exception throws if cannot parse args
+     */
     private static void parseArguments(String[] args) throws Exception {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-p")) {
@@ -85,7 +86,7 @@ public class EulerCalculator {
                 numberOfThreads = new Integer(args[i + 1]);
             }
             if (args[i].equals("-o")) {
-                outputFileName = args[i + 1];
+                filename = args[i + 1];
             }
             if (args[i].equals("-q")) {
                 quietState = true;
@@ -93,11 +94,16 @@ public class EulerCalculator {
         }
     }
 
+    /**
+     * Write result to file
+     *
+     * @param result euler numbers
+     */
     private static void writeToFile(String result) {
-        try (PrintStream file = new PrintStream(outputFileName)) {
+        try (PrintStream file = new PrintStream(filename)) {
             file.println("Result: " + result);
         } catch (FileNotFoundException fnf) {
-            System.out.println("File " + outputFileName + " not found.");
+            System.out.println("File " + filename + " not found.");
         }
     }
 }

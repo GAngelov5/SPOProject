@@ -7,7 +7,7 @@ import org.apfloat.ApintMath;
 
 public class EulerTask extends RecursiveTask<Apfloat> {
 
-    private static final long serialVersionUID = 6280257936325326701L;
+    private static final long serialVersionUID = 1L;
     private int precision;
     private BigInteger firstTerm;
     private BigInteger lastTerm;
@@ -28,26 +28,26 @@ public class EulerTask extends RecursiveTask<Apfloat> {
     protected Apfloat compute() {
 
         if (!quietState) {
-            System.out.printf("Thread %d start executing terms in [%s, %s).\n",
-                    threadIndex, firstTerm.toString(), lastTerm.toString());
+            System.out.printf("Thread %d start executing terms in [%d, %d).\n",
+                    threadIndex, firstTerm, lastTerm);
         }
 
         long startOfExecutionTime = Calendar.getInstance().getTimeInMillis();
 
         Apfloat eulerNumber = new Apfloat(0, precision);
-
+        //calculate first member of the sum in the current term
         Apfloat num = new Apfloat(BigInteger.valueOf(2)
                 .multiply(firstTerm).add(BigInteger.ONE), precision);
-        BigInteger factorial = ApintMath.factorial(2*firstTerm.intValue()).toBigInteger();
+        BigInteger factorial = ApintMath.factorial(2*firstTerm.longValue()).toBigInteger();
         Apfloat denum = new Apfloat(factorial, precision);
 
         eulerNumber = eulerNumber.add(num.divide(denum));
 
+        //calculate members excluding first and last.
         for (BigInteger term = firstTerm.add(BigInteger.ONE); term
                 .compareTo(lastTerm) < 0; term = term.add(BigInteger.ONE)) {
 
             num = num.add(new Apfloat(2, precision));
-
             denum = denum
                     .multiply(new Apfloat((term.multiply(BigInteger.valueOf(2))
                             .subtract(BigInteger.ONE)).multiply(term
@@ -57,6 +57,7 @@ public class EulerTask extends RecursiveTask<Apfloat> {
 
         }
 
+        //calculating the last member of the sum in the current term
         num = num.add(new Apfloat(2, precision));
         denum = denum
                 .multiply(new Apfloat((lastTerm.multiply(BigInteger.valueOf(2))
