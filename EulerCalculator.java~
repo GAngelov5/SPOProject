@@ -22,6 +22,8 @@ public class EulerCalculator {
         } catch (Exception e) {
             System.out.println("Wrong format of options");
         }
+        precision = 10000;
+        numberOfThreads = 4;
         if (precision > 0 && numberOfThreads > 0) {
 
             BigInteger terms = BigInteger.valueOf(precision).divide(
